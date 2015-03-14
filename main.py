@@ -14,29 +14,6 @@ admin.add_view(ModelView(Log, db.session))
 
 @app.route('/')
 def index():
-    """
-    all = Url.query.all()
-
-    row_inc = ['</td><td>'.join([str(i.datetime), i.url, i.method, i.data]) for i in all]
-    row = ['<td>' + s + '</td>' for s in row_inc]
-    body_inc = '</tr>\n<tr>'.join(row)
-    body = '<tr>' + body_inc + '</tr>'
-    head_inc = '</th><th>'.join(['date', 'url', 'method', 'data'])
-    head = '<tr><th>' + head_inc + '</th></tr>'
-    table = '<table>' + head + body + '</table>'
-
-    return '\n'.join((
-        '<!DOCTYPE html>',
-        '<html>',
-            '<head>',
-                '<meta charset="utf-8" />',
-            '</head>',
-            '<body>',
-                table,
-            '</body>',
-        '</html>'
-    ))
-    """
     return 'hello world !'
 
 
@@ -47,6 +24,21 @@ def other():
     db.session.commit()
 
     return index()
+
+
+@app.route('/file/<path:path>')
+def get_time(path):
+    logs = Log.query.filter_by(file=path).order_by(Log.timestamp.desc()).all()
+
+    time = 0
+    for i in xrange(len(logs)):
+        if logs[i].is_write and i+1 != len(logs):
+            diff = logs[i].timestamp - logs[i+1].timestamp
+            if diff < 60*10:
+                time += diff
+                logs[i+1].is_write = True
+
+    return str(time) + '<br>--<br>' + '<br>'.join([str(i) for i in logs])
 
 
 if __name__ == "__main__":
