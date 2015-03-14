@@ -2,11 +2,11 @@
 # @Author: nodraak
 # @Date:   2015-01-17 18:28:46
 # @Last Modified by:   nodraak
-# @Last Modified time: 2015-03-12 18:16:49
+# @Last Modified time: 2015-03-13 18:26:45
 
 NAME="wakatime"
-SITE_NAME="wakatime-site"
-ENV_NAME="wakatime-env"
+SITE_NAME="$NAME-site"
+ENV_NAME="$NAME-env"
 USER="nodraak"
 GROUP="nodraak"
 GIT_REPO="$SITE_NAME"
@@ -49,6 +49,8 @@ sudo ln -s /etc/nginx/sites-available/$NAME-prod /etc/nginx/sites-enabled/$SITE_
 sudo nginx -t
 echo "=> Nginx OK"
 
+# gunicorn
+
 # supervisor
 echo "=> Supervisor"
 
@@ -64,7 +66,6 @@ echo "=> Supervisor OK"
 
 echo "reloading all"
 sudo service nginx restart
-sudo service supervisor restart
 sudo supervisorctl restart $NAME
 
 echo "All done, no errors."

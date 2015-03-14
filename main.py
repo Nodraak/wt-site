@@ -1,9 +1,17 @@
 
-import json
 from flask import Flask, request
-from db import db, Url
+from flask_admin import Admin
+from flask_admin.contrib.sqla import ModelView
+from db import db, Url, Log
+
 
 app = Flask(__name__)
+app.secret_key = 'why would I tell you my secret key?'
+
+admin = Admin(app)
+admin.add_view(ModelView(Url, db.session))
+admin.add_view(ModelView(Log, db.session))
+
 
 @app.route('/')
 def index():
@@ -32,15 +40,14 @@ def index():
 
 @app.route('/<path:path>', methods=['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'OPTIONS'])
 def other(path):
-    data = 'None'
-    if request.method == 'POST':
-        data = str(request.get_json())
-    tmp = Url(path, request.method, data)
+    data = request.get_json() if request.method == 'POST' else {}
 
-    db.session.add(tmp)
+    url = Url(path, request.method, data)
+    db.session.add(url)
     db.session.commit()
+
     return index()
+
 
 if __name__ == "__main__":
     app.run(debug=True)
-
