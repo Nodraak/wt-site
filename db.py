@@ -16,7 +16,9 @@ class Url(db.Model):
     data = db.Column(db.String(1024))
     datetime = db.Column(db.DateTime(timezone=True))
 
-    def __init__(self, url):
+    def __init__(self, url='None', method='None', data='None'):
         self.url = url
+        self.method = method
+        self.data = data
         self.datetime = datetime.utcnow()
 

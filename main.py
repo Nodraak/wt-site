@@ -32,12 +32,10 @@ def index():
 
 @app.route('/<path:path>', methods=['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'OPTIONS'])
 def other(path):
-    tmp = Url(path)
-    tmp.method = request.method
-    tmp.data = 'None'
-    print request
+    data = 'None'
     if request.method == 'POST':
-        tmp.data = ','.join([j for j in ':'.join([(i[0], i[1]) for i in request.form.items()])])
+        data = str(request.get_json())
+    tmp = Url(path, request.method, data)
 
     db.session.add(tmp)
     db.session.commit()
