@@ -2,19 +2,19 @@
 from flask import Flask, request
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
-from db import db, Url, Log
+from db import db, Log
 
 
 app = Flask(__name__)
 app.secret_key = 'why would I tell you my secret key?'
 
 admin = Admin(app)
-admin.add_view(ModelView(Url, db.session))
 admin.add_view(ModelView(Log, db.session))
 
 
 @app.route('/')
 def index():
+    """
     all = Url.query.all()
 
     row_inc = ['</td><td>'.join([str(i.datetime), i.url, i.method, i.data]) for i in all]
@@ -36,14 +36,14 @@ def index():
             '</body>',
         '</html>'
     ))
+    """
+    return 'hello world !'
 
 
-@app.route('/<path:path>', methods=['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'OPTIONS'])
-def other(path):
-    data = request.get_json() if request.method == 'POST' else {}
-
-    url = Url(path, request.method, data)
-    db.session.add(url)
+@app.route('/api', methods=['POST'])
+def other():
+    tmp = Log(request.get_json())
+    db.session.add(tmp)
     db.session.commit()
 
     return index()
