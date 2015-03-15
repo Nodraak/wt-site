@@ -1,4 +1,5 @@
 
+from datetime import date
 from . import db
 
 
@@ -9,7 +10,7 @@ class Log(db.Model):
     lines = db.Column(db.Integer)
     project = db.Column(db.String(256))
     file = db.Column(db.String(256))
-    timestamp = db.Column(db.Integer)
+    date = db.Column(db.DateTime)
     is_write = db.Column(db.Boolean)
     other = db.Column(db.Text)
 
@@ -19,9 +20,9 @@ class Log(db.Model):
         self.lines = data.pop('lines', 0)
         self.project = data.pop('project', '')
         self.file = data.pop('file', '')
-        self.timestamp = int(data.pop('time', 0))
+        self.date = date.fromtimestamp(data.pop('time', 0))
         self.is_write = bool(data.pop('is_write', False))
         self.other = str(data)
 
     def __repr__(self):
-        return str(self.timestamp)
+        return str(self.date)
