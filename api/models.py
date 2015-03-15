@@ -1,10 +1,5 @@
 
-from flask import Flask
-from flask.ext.sqlalchemy import SQLAlchemy
-
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
-db = SQLAlchemy(app)
+from . import db
 
 
 class Log(db.Model):
@@ -27,3 +22,6 @@ class Log(db.Model):
         self.timestamp = int(data.pop('time', 0))
         self.is_write = bool(data.pop('is_write', False))
         self.other = str(data)
+
+    def __repr__(self):
+        return str(self.timestamp)
