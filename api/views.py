@@ -39,9 +39,10 @@ def time_by_file(path):
 @app.route('/time_overall')
 def time_overall():
     week = 4
+    time_range = range(-week*7+1, 0+1)
 
     times = []
-    for i in range(-week*7+1, 0+1):
+    for i in time_range:
         today = datetime.today()
 
         logs = Log.query.filter(
@@ -65,7 +66,7 @@ def time_overall():
 
     #return '<br />'.join(time_str)
 
-    ret_data = zip(times, range(-week*7+1, 0+1))
+    ret_data = zip(times, time_range)
 
     ret = """
     <html>
@@ -91,7 +92,8 @@ def time_overall():
             var options = {
               title: 'Time overall',
               curveType: 'function',
-              legend: { position: 'bottom' }
+              legend: { position: 'bottom' },
+              focusTarget: 'category'},
             };
 
             var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
@@ -101,10 +103,10 @@ def time_overall():
         </script>
       </head>
       <body>
-        <div id="curve_chart" style="width: 900px; height: 500px"></div>
+        <div id="curve_chart" style="width: 1000px; height: 400px"></div>
       </body>
     </html>
-    """ % '\n'.join(["['%d', %d]," % (time, date) for time, date in ret_data])
+    """ % '\n'.join(["['new Date(day=%d)', %d]," % (date, time) for time, date in ret_data])
 
     return ret
 
