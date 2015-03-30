@@ -60,12 +60,6 @@ def time_overall():
                     logs[i+1].is_write = True
         times.append(tmp)
 
-    #time_str = []
-    #for time in times:
-    #    time_str.append("%02d:%02d:%02d" % (time/3600, (time/60)%60, time % 60))
-
-    #return '<br />'.join(time_str)
-
     ret_data = zip(times, time_range)
 
     ret = """
@@ -85,7 +79,7 @@ def time_overall():
 
           function drawChart() {
             var data = google.visualization.arrayToDataTable([
-              ['Date', 'Secondes'],
+              ['Date', 'Heures'],
               %s
             ]);
 
@@ -106,7 +100,7 @@ def time_overall():
         <div id="curve_chart" style="width: 1000px; height: 400px"></div>
       </body>
     </html>
-    """ % '\n'.join(["[(function(){var d = new Date(); d.setTime( new Date().getTime() + %d*24*60*60*1000 ); return d})();, %d]," % (date, time) for time, date in ret_data])
+    """ % '\n'.join(["[new Date(2015, 03-1, 31-%d-1), %.1f]," % (date, 1.0*time/3600) for time, date in ret_data])
 
     return ret
 
