@@ -59,9 +59,52 @@ def time_overall():
                     logs[i+1].is_write = True
         times.append(tmp)
 
-    time_str = []
-    for time in times:
-        time_str.append("%02d:%02d:%02d" % (time/3600, (time/60)%60, time % 60))
+    #time_str = []
+    #for time in times:
+    #    time_str.append("%02d:%02d:%02d" % (time/3600, (time/60)%60, time % 60))
 
-    return '<br />'.join(time_str)
+    #return '<br />'.join(time_str)
+
+    ret_data = zip(times, range(-week*7+1, 0+1))
+
+    ret = """
+    <html>
+      <head>
+        <script type="text/javascript"
+              src="https://www.google.com/jsapi?autoload={
+                'modules':[{
+                  'name':'visualization',
+                  'version':'1',
+                  'packages':['corechart']
+                }]
+              }"></script>
+
+        <script type="text/javascript">
+          google.setOnLoadCallback(drawChart);
+
+          function drawChart() {
+            var data = google.visualization.arrayToDataTable([
+              ['Date', 'Secondes'],
+              %s
+            ]);
+
+            var options = {
+              title: 'Time overall',
+              curveType: 'function',
+              legend: { position: 'bottom' }
+            };
+
+            var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+            chart.draw(data, options);
+          }
+        </script>
+      </head>
+      <body>
+        <div id="curve_chart" style="width: 900px; height: 500px"></div>
+      </body>
+    </html>
+    """ % '\n'.join(["['%d', %d]," % (time, date) for time, date in ret_data])
+
+    return ret
 
