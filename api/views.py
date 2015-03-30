@@ -93,7 +93,7 @@ def time_overall():
               title: 'Time overall',
               curveType: 'function',
               legend: { position: 'bottom' },
-              focusTarget: 'category'},
+              focusTarget: 'category',
             };
 
             var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
@@ -106,7 +106,7 @@ def time_overall():
         <div id="curve_chart" style="width: 1000px; height: 400px"></div>
       </body>
     </html>
-    """ % '\n'.join(["['new Date(day=%d)', %d]," % (date, time) for time, date in ret_data])
+    """ % '\n'.join(["[(function(){var d = new Date(); d.setTime( new Date().getTime() + %d*24*60*60*1000 ); return d})();, %d]," % (date, time) for time, date in ret_data])
 
     return ret
 
