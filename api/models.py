@@ -1,9 +1,9 @@
 
-from datetime import date
+from datetime import datetime
 from . import db
 
 
-class Log(db.Model):
+class Log(db.Model):  # TODO : rename to heartbeat
     id = db.Column(db.Integer, primary_key=True)
     branch = db.Column(db.String(256))
     language = db.Column(db.String(256))
@@ -20,7 +20,7 @@ class Log(db.Model):
         self.lines = data.pop('lines', 0)
         self.project = data.pop('project', '')
         self.file = data.pop('file', '')
-        self.date = date.fromtimestamp(data.pop('time', 0))
+        self.date = datetime.fromtimestamp(data.pop('time', 0))
         self.is_write = bool(data.pop('is_write', False))
         self.other = str(data)
 

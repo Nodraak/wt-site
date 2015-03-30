@@ -1,5 +1,5 @@
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask import request
 from sqlalchemy.sql import extract
 from . import app, db
@@ -29,8 +29,8 @@ def time_by_file(path):
     for i in xrange(len(logs)):
         if logs[i].is_write and i+1 != len(logs):
             diff = logs[i].date - logs[i+1].date
-            if diff < 60*10:
-                time += diff
+            if diff < timedelta(minutes=10):
+                time += diff.total_seconds()
                 logs[i+1].is_write = True
 
     return str(time) + '<br>--<br>' + '<br>'.join([str(i) for i in logs])
@@ -38,9 +38,10 @@ def time_by_file(path):
 
 @app.route('/time_overall')
 def time_overall():
+    week = 4
 
     times = []
-    for i in range(-2*7+1, 0+1):
+    for i in range(-week*7+1, 0+1):
         today = datetime.today()
 
         logs = Log.query.filter(
@@ -53,8 +54,8 @@ def time_overall():
         for i in xrange(len(logs)):
             if logs[i].is_write and i+1 != len(logs):
                 diff = logs[i].date - logs[i+1].date
-                if diff < 60*10:
-                    tmp += diff
+                if diff < timedelta(minutes=10):
+                    tmp += diff.total_seconds()
                     logs[i+1].is_write = True
         times.append(tmp)
 
@@ -62,34 +63,5 @@ def time_overall():
     for time in times:
         time_str.append("%02d:%02d:%02d" % (time/3600, (time/60)%60, time % 60))
 
-    return '<br>'.join(time_str) + '<br>--<br>' + '<br>'.join([str(i) for i in logs])
-
-
-
-"""
-
-line
-    time by day / day
-    time by project / day
-chart
-    language / overall
-box
-    time / project
-
-
-
-track
-    time
-    lines
-count
-    day
-    week
-    total
-by
-    file
-    project
-    language
-    overall
-
-"""
+    return '<br />'.join(time_str)
 
